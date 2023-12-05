@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/Chained/auth-service";
+
+message User {
+  int64 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string password = 5;
+  string role = 6;
+}
+
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+  string expirationTime = 3;
+}
+
+message AuthorizationRequest {
+  string firstname = 1;
+  string lastname = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message AuthorizationResponse {
+  int64 responseCode = 1;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  int64 id = 1;
+  string firstname = 2;
+  string lastname = 3;
+  string email = 4;
+  string password = 5;
+}
+
+message UpdateUserResponse {
+  string status = 1;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+message DeleteUserResponse {
+  int64 responseCode = 1;
+}
+
+message TokenRefreshRequest {
+  string refreshToken = 1;
+}
+
+message TokenRefreshResponse {
+  string accessToken = 1;
+}
+
+message VerifyEmailRequest {
+  string verificationCode = 1;
+}
+
+message GenericResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  string message = 1;
+}
+
+service AuthService {
+  // Authentication + Token refresh
+  rpc Authenticate(AuthRequest) returns (AuthResponse);
+  rpc RefreshToken(TokenRefreshRequest) returns (TokenRefreshResponse);
+
+  // User CRUD
+  rpc Authorize(User) returns (User);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+
+  // Email verification
+  rpc VerifyEmail(VerifyEmailRequest) returns (GenericResponse);
+
+  // Forgot password
+  rpc ForgotPassword(ForgotPasswordRequest) returns (ForgotPasswordResponse);
+}
